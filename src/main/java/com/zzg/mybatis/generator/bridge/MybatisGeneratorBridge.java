@@ -147,16 +147,12 @@ public class MybatisGeneratorBridge {
         /**
          * 添加 Plugins
          */
-        //测试
-//        PluginConfiguration mapperTestPluginConfiguration = new PluginConfiguration();
-//        mapperTestPluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.MapperTestPlugin");
-//        mapperTestPluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.MapperTestPlugin");
-//        context.addPluginConfiguration(mapperTestPluginConfiguration);
-//        PluginConfiguration modelTestPluginConfiguration = new PluginConfiguration();
-//        modelTestPluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.ModelTestPlugin");
-//        modelTestPluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.ModelTestPlugin");
-//        context.addPluginConfiguration(modelTestPluginConfiguration);
-        //实体添加序列化
+        // builder形式的set方法
+        PluginConfiguration builderSetPluginConfiguration = new PluginConfiguration();
+        builderSetPluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.BuilderSetPlugin");
+        builderSetPluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.BuilderSetPlugin");
+        context.addPluginConfiguration(builderSetPluginConfiguration);
+        // 实体添加序列化
         final PluginConfiguration serializablePluginConfiguration = new PluginConfiguration();
         serializablePluginConfiguration.addProperty("type", "org.mybatis.generator.plugins.SerializablePlugin");
         serializablePluginConfiguration.setConfigurationType("org.mybatis.generator.plugins.SerializablePlugin");
@@ -179,11 +175,6 @@ public class MybatisGeneratorBridge {
         logicalDeletePluginConfiguration.addProperty("logicalUnDeleteValue", "0");
         logicalDeletePluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.LogicalDeletePlugin");
         context.addPluginConfiguration(logicalDeletePluginConfiguration);
-        // 流式builder的with(setter)
-        final PluginConfiguration fluentBuilderPluginConfiguration = new PluginConfiguration();
-        fluentBuilderPluginConfiguration.addProperty("type", "org.mybatis.generator.plugins.FluentBuilderMethodsPlugin");
-        fluentBuilderPluginConfiguration.setConfigurationType("org.mybatis.generator.plugins.FluentBuilderMethodsPlugin");
-        context.addPluginConfiguration(fluentBuilderPluginConfiguration);
         // toString, hashCode, equals插件
         if (generatorConfig.isNeedToStringHashcodeEquals()) {
             final PluginConfiguration pluginConfiguration1 = new PluginConfiguration();
