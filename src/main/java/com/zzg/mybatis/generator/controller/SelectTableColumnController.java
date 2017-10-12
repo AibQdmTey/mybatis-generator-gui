@@ -81,6 +81,11 @@ public class SelectTableColumnController extends BaseFXController {
                     columnOverride.setJavaProperty(item.getPropertyName());
                     columnOverride.setJavaType(item.getJavaType());
                     columnOverrides.add(columnOverride);
+                } else if ( "TEXT".equalsIgnoreCase(item.getJdbcType())){
+                    ColumnOverride columnOverride = new ColumnOverride(item.getColumnName());
+                    columnOverride.setJavaType("java.lang.String");
+                    columnOverride.setJdbcType("VARCHAR");
+                    columnOverrides.add(columnOverride);
                 }
             });
             mainUIController.setIgnoredColumns(ignoredColumns);

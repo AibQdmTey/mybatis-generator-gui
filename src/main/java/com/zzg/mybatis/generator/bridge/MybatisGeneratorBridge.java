@@ -74,22 +74,20 @@ public class MybatisGeneratorBridge {
 	    final String connectorLibPath = ConfigHelper.findConnectorLibPath(selectedDatabaseConfig.getDbType());
 	    _LOG.info("connectorLibPath: {}", connectorLibPath);
 	    configuration.addClasspathEntry(connectorLibPath);
-        // Table configuration
+
+        // Table 配置
         final TableConfiguration tableConfig = new TableConfiguration(context);
         tableConfig.setTableName(generatorConfig.getTableName());
         tableConfig.setDomainObjectName(generatorConfig.getDomainObjectName());
         tableConfig.setAllColumnDelimitingEnabled(true);
-
         // 针对 postgresql 单独配置
         if (DbType.valueOf(selectedDatabaseConfig.getDbType()).getDriverClass() == "org.postgresql.Driver") {
             tableConfig.setDelimitIdentifiers(true);
         }
-
         //添加GeneratedKey主键生成
 		if (StringUtils.isNoneEmpty(generatorConfig.getGenerateKeys())) {
 			tableConfig.setGeneratedKey(new GeneratedKey(generatorConfig.getGenerateKeys(), selectedDatabaseConfig.getDbType(), true, null));
 		}
-
         if (generatorConfig.getMapperName() != null) {
             tableConfig.setMapperName(generatorConfig.getMapperName());
         }
@@ -99,6 +97,7 @@ public class MybatisGeneratorBridge {
                 tableConfig.addIgnoredColumn(ignoredColumn);
             });
         }
+        // add override colums （已经覆盖text为varchar-string）
         if (columnOverrides != null) {
             columnOverrides.stream().forEach(columnOverride -> {
                 tableConfig.addColumnOverride(columnOverride);
@@ -107,20 +106,25 @@ public class MybatisGeneratorBridge {
         if (generatorConfig.isUseActualColumnNames()) {
 			tableConfig.addProperty("useActualColumnNames", "true");
         }
+
+        // jdbc 配置
         final JDBCConnectionConfiguration jdbcConfig = new JDBCConnectionConfiguration();
         jdbcConfig.setDriverClass(DbType.valueOf(selectedDatabaseConfig.getDbType()).getDriverClass());
         jdbcConfig.setConnectionURL(DbUtil.getConnectionUrlWithSchema(selectedDatabaseConfig));
         jdbcConfig.setUserId(selectedDatabaseConfig.getUsername());
         jdbcConfig.setPassword(selectedDatabaseConfig.getPassword());
-        // java model
+
+        // java model 配置
         final JavaModelGeneratorConfiguration modelConfig = new JavaModelGeneratorConfiguration();
         modelConfig.setTargetPackage(generatorConfig.getModelPackage());
         modelConfig.setTargetProject(generatorConfig.getProjectFolder() + "/" + generatorConfig.getModelPackageTargetFolder());
-        // Mapper configuration
+
+        // Mapper 配置
         final SqlMapGeneratorConfiguration mapperConfig = new SqlMapGeneratorConfiguration();
         mapperConfig.setTargetPackage(generatorConfig.getMappingXMLPackage());
         mapperConfig.setTargetProject(generatorConfig.getProjectFolder() + "/" + generatorConfig.getMappingXMLTargetFolder());
-        // DAO
+
+        // DAO 配置
         final JavaClientGeneratorConfiguration daoConfig = new JavaClientGeneratorConfiguration();
         daoConfig.setConfigurationType("XMLMAPPER");
         daoConfig.setTargetPackage(generatorConfig.getDaoPackage());
@@ -149,8 +153,8 @@ public class MybatisGeneratorBridge {
          */
         // builder形式的set方法
         PluginConfiguration builderSetPluginConfiguration = new PluginConfiguration();
-        builderSetPluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.BuilderSetPlugin");
-        builderSetPluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.BuilderSetPlugin");
+        builderSetPluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.BuilderSetterPlugin");
+        builderSetPluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.BuilderSetterPlugin");
         context.addPluginConfiguration(builderSetPluginConfiguration);
         // 实体添加序列化
         final PluginConfiguration serializablePluginConfiguration = new PluginConfiguration();
@@ -162,6 +166,11 @@ public class MybatisGeneratorBridge {
         enhancedExamplePluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.ExampleEnhancedPlugin");
         enhancedExamplePluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.ExampleEnhancedPlugin");
         context.addPluginConfiguration(enhancedExamplePluginConfiguration);
+        // 获取column
+        final PluginConfiguration modelColumnPluginConfiguration = new PluginConfiguration();
+        modelColumnPluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.ModelColumnPlugin");
+        modelColumnPluginConfiguration.setConfigurationType("com.zzg.mybatis.generator.plugins.ModelColumnPlugin");
+        context.addPluginConfiguration(modelColumnPluginConfiguration);
         // 批量插入
         final PluginConfiguration batchInsertPluginConfiguration = new PluginConfiguration();
         batchInsertPluginConfiguration.addProperty("type", "com.zzg.mybatis.generator.plugins.BatchInsertPlugin");
