@@ -10,6 +10,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import org.mybatis.generator.config.ColumnOverride;
 import org.mybatis.generator.config.IgnoredColumn;
+import org.mybatis.generator.logging.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,6 +23,7 @@ import java.util.ResourceBundle;
  * Created by Owen on 6/20/16.
  */
 public class SelectTableColumnController extends BaseFXController {
+    private static final Logger _LOG = LoggerFactory.getLogger(SelectTableColumnController.class);
 
     @FXML
     private TableView<UITableColumnVO> columnListView;
@@ -82,6 +86,7 @@ public class SelectTableColumnController extends BaseFXController {
                     columnOverride.setJavaType(item.getJavaType());
                     columnOverrides.add(columnOverride);
                 } else if ( "TEXT".equalsIgnoreCase(item.getJdbcType())){
+                    _LOG.info("override TEXT to String");
                     ColumnOverride columnOverride = new ColumnOverride(item.getColumnName());
                     columnOverride.setJavaType("java.lang.String");
                     columnOverride.setJdbcType("VARCHAR");
