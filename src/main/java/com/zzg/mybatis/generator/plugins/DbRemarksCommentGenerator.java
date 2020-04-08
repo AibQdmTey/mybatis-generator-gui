@@ -24,6 +24,7 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.internal.util.StringUtility;
 
 import java.util.Properties;
+import java.util.Set;
 
 import static org.mybatis.generator.internal.util.StringUtility.isTrue;
 
@@ -69,7 +70,32 @@ public class DbRemarksCommentGenerator implements CommentGenerator {
         return;
     }
 
-    public void addConfigurationProperties(Properties properties) {
+	@Override
+	public void addGeneralMethodAnnotation(Method method, IntrospectedTable introspectedTable, Set<FullyQualifiedJavaType> set) {
+
+
+	}
+
+	@Override
+	public void addGeneralMethodAnnotation(Method method, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn, Set<FullyQualifiedJavaType> set) {
+
+	}
+
+	@Override
+	public void addFieldAnnotation(Field field, IntrospectedTable introspectedTable, Set<FullyQualifiedJavaType> set) {
+
+	}
+
+	@Override
+	public void addFieldAnnotation(Field field, IntrospectedTable introspectedTable, IntrospectedColumn introspectedColumn, Set<FullyQualifiedJavaType> set) {
+
+	}
+
+	@Override
+	public void addClassAnnotation(InnerClass innerClass, IntrospectedTable introspectedTable, Set<FullyQualifiedJavaType> set) {
+	}
+
+	public void addConfigurationProperties(Properties properties) {
         this.properties.putAll(properties);
         columnRemarks = isTrue(properties
                 .getProperty("columnRemarks"));
@@ -85,6 +111,7 @@ public class DbRemarksCommentGenerator implements CommentGenerator {
                                 IntrospectedTable introspectedTable) {
         topLevelClass.addJavaDocLine("/**");
         topLevelClass.addJavaDocLine(" * @author ");
+        topLevelClass.addJavaDocLine(" * " + introspectedTable.getRemarks());
         topLevelClass.addJavaDocLine(" */");
         if(isAnnotations) {
             topLevelClass.addAnnotation("@Table(name=\"" + introspectedTable.getFullyQualifiedTableNameAtRuntime() + "\")");

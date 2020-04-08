@@ -12,6 +12,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -214,7 +216,7 @@ public class ConfigHelper {
 		if (resource != null) {
 			try {
 				File file = new File(resource.toURI().getRawPath() + "/../lib/" + type.getConnectorJarFile());
-				return file.getCanonicalPath();
+				return URLDecoder.decode(file.getCanonicalPath(), Charset.forName("UTF-8").displayName());
 			} catch (Exception e) {
 				throw new RuntimeException("找不到驱动文件，请联系开发者");
 			}
@@ -233,11 +235,11 @@ public class ConfigHelper {
 			} else {
 				file = new File("src/main/resources/lib");
 			}
-			System.out.println(file.getCanonicalPath());
+			_LOG.info("jar lib path: {}", file.getCanonicalPath());
 			File[] jarFiles = file.listFiles();
-			System.out.println("jarFiles:" + jarFiles);
 			if (jarFiles != null && jarFiles.length > 0) {
 				for (File jarFile : jarFiles) {
+					_LOG.info("jar file: {}", jarFile.getAbsolutePath());
 					if (jarFile.isFile() && jarFile.getAbsolutePath().endsWith(".jar")) {
 						jarFilePathList.add(jarFile.getAbsolutePath());
 					}
